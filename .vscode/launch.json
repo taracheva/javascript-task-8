@@ -1,0 +1,32 @@
+{
+    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Client Program",
+            "program": "${workspaceFolder}\\client.js",
+            "args": [
+                "send","--from=Вася", "--to", "Игорь" ,"--text", "Привет, Игорь"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Client List Program",
+            "program": "${workspaceFolder}\\client.js",
+            "args": [
+                "list","--to=Игорь"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}\\server.js"
+        }
+    ]
+}
