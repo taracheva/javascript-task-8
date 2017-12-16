@@ -89,16 +89,15 @@ function deleteMessage(urlParsed, res) {
 }
 
 function updateMessage(urlParsed, res, req) {
-    let id = getId(urlParsed.path);
-    let message = messages.find(m => m.id === id);
-    message.edited = true;
-
     var body = '';
     req.on('data', function (chunk) {
         body += chunk.toString();
     });
     req.on('end', function () {
         let text = JSON.parse(body).text;
+        let id = getId(urlParsed.path);
+        let message = messages.find(m => m.id === id);
+        message.edited = true;
         message.text = text;
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(message));
