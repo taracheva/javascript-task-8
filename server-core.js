@@ -14,23 +14,36 @@ server.on('request', (req, res) => {
     var method = req.method;
 
     if (urlParsed.pathname === '/messages') {
-        if (method === 'GET') {
-            sendMessages(query, res);
-        }
-        if (method === 'POST') {
-            saveMessage(req, query, res);
-        }
+        handleCorrectUrl(method, query, res, req);
     } else if (urlParsed.pathname.startsWith('/messages/')) {
-        if (method === 'DELETE') {
-            deleteMessage(urlParsed, res);
-        } else {
-            updateMessage(urlParsed, res, req);
-        }
+        handleCorrectUrlWithId(method, urlParsed, res, req);
     } else {
         res.statusCode = 404;
         res.end();
     }
 });
+
+function handleCorrectUrlWithId(method, urlParsed, res, req) {
+    if (method === 'DELETE') {
+        deleteMessage(urlParsed, res);
+    } else if (method === 'PATCH') {
+        updateMessage(urlParsed, res, req);
+    } else {
+        res.statusCode = 404;
+        res.end();
+    }
+}
+
+function handleCorrectUrl(method, query, res, req) {
+    if (method === 'GET') {
+        sendMessages(query, res);
+    } else if (method === 'POST') {
+        saveMessage(req, query, res);
+    } else {
+        res.statusCode = 404;
+        res.end();
+    }
+}
 
 function saveMessage(req, query, res) {
     var body = '';
