@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports.execute = execute;
-module.exports.isStar = false;
+module.exports.isStar = true;
 
 const request = require('request');
 const chalk = require('chalk');

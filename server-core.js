@@ -21,16 +21,24 @@ server.on('request', (req, res) => {
             saveMessage(req, query, res);
         }
     } else if (urlParsed.pathname.startsWith('/messages/')) {
-        if (method === 'DELETE') {
-            deleteMessage(urlParsed, res);
-        } else {
-            updateMessage(urlParsed, res, req);
-        }
+        handleRequestWithId(method, urlParsed, res, req);
     } else {
         res.statusCode = 404;
         res.end();
     }
 });
+
+function handleRequestWithId(method, urlParsed, res, req) {
+    if (method === 'DELETE') {
+        deleteMessage(urlParsed, res);
+    }
+    if (method === 'PATCH') {
+        updateMessage(urlParsed, res, req);
+    } else {
+        res.statusCode = 404;
+        res.end();
+    }
+}
 
 function saveMessage(req, query, res) {
     var body = '';
