@@ -87,24 +87,24 @@ function sendMessage(from, to, text, isDetailed) {
 
 function deleteMessage(id) {
     return new Promise((resolve, reject) => {
-        let req = request
+        request
             .delete({ uri: `http://localhost:8080/messages/${id}` })
             .on('response', res => {
                 res.on('end', function () {
                     resolve('DELETED');
                 });
+            })
+            .on('error', function (err) {
+                console.info('вот здесь ошибка');
+                reject(err);
             });
-        req.on('error', function (err) {
-            console.info('вот здесь ошибка');
-            reject(err);
-        });
     });
 }
 
 function editMessage(id, text, isDetailed) {
     return new Promise((resolve, reject) => {
         let req = request
-            .post({ uri: `http://localhost:8080/messages/${id}` })
+            .patch({ uri: `http://localhost:8080/messages/${id}` })
             .on('response', res => {
                 let body = '';
                 res.on('data', function (chunk) {
