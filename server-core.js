@@ -102,19 +102,24 @@ function deleteMessage(urlParsed, res) {
 }
 
 function updateMessage(urlParsed, res, req) {
-    var body = '';
-    req.on('data', function (chunk) {
-        body += chunk.toString();
-    });
-    req.on('end', function () {
-        let text = JSON.parse(body).text;
-        let id = getId(urlParsed.path);
-        let message = messages.find(m => m.id === id);
-        message.edited = true;
-        message.text = text;
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(message));
-    });
+    let id = getId(urlParsed.path);
+    let message = messages.find(m => m.id === id);
+    if (typeof message === 'undefined') {
+        res.statusCode = 404;
+        res.end();
+    } else {
+        var body = '';
+        req.on('data', function (chunk) {
+            body += chunk.toString();
+        });
+        req.on('end', function () {
+            let text = JSON.parse(body).text;
+            message.edited = true;
+            message.text = text;
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(message));
+        });
+    }
 }
 
 function getId(path) {
