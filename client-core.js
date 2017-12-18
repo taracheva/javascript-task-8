@@ -23,6 +23,16 @@ function execute() {
     const args = parser(process.argv.slice(2));
 
     let command = args._[0];
+    let options = getOptions(args);
+
+    if (!commands[command]) {
+        return Promise.reject('unknown command');
+    }
+
+    return commands[command](options);
+}
+
+function getOptions(args) {
     let from = args.from;
     let to = args.to;
     let text = args.text;
@@ -30,11 +40,7 @@ function execute() {
     let id = args.id;
     let options = { from, to, text, isDetailed, id };
 
-    if (!commands[command]) {
-        return Promise.reject('unknown command');
-    }
-
-    return commands[command](options);
+    return options;
 }
 
 function showMessages(args) {
