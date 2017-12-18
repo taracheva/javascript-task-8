@@ -95,14 +95,14 @@ function createMessage(text, query) {
 }
 
 function deleteMessage(urlParsed, res) {
-    let id = getId(urlParsed.path);
+    let id = getId(urlParsed.pathname);
     messages = messages.filter(message => message.id !== id);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ status: 'ok' }));
 }
 
 function updateMessage(urlParsed, res, req) {
-    let id = getId(urlParsed.path);
+    let id = getId(urlParsed.pathname);
     let message = messages.find(m => m.id === id);
     if (typeof message === 'undefined') {
         res.statusCode = 404;
