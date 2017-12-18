@@ -27,7 +27,8 @@ function execute() {
     let to = args.to;
     let text = args.text;
     let isDetailed = args.v;
-    let options = { from, to, text, isDetailed };
+    let id = args.id;
+    let options = { from, to, text, isDetailed, id };
 
     if (!commands[command]) {
         return Promise.reject('unknown command');
