@@ -51,8 +51,7 @@ function showMessages(args) {
                 res.on('end', function () {
                     let messages = JSON.parse(body);
                     let result = messages.map(message => messageToString(message, args.isDetailed));
-                    let m = result.join('\n\n');
-                    resolve(m);
+                    resolve(result.join('\n\n'));
                 });
             });
         req.on('error', function (err) {
