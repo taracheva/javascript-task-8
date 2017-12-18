@@ -29,6 +29,10 @@ function execute() {
     let isDetailed = args.v;
     let options = { from, to, text, isDetailed };
 
+    if (!commands[command]) {
+        return Promise.reject('unknown command');
+    }
+
     return commands[command](options);
 }
 
