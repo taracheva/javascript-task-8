@@ -11,6 +11,13 @@ const green = chalk.hex('#0f0');
 const yellow = chalk.hex('#ff0');
 const gray = chalk.hex('#777');
 
+var commands = {
+    'list': showMessages,
+    'send': sendMessage,
+    'delete': deleteMessage,
+    'edit': editMessage
+};
+
 function execute() {
     const parser = require('minimist');
     const args = parser(process.argv.slice(2));
@@ -20,25 +27,16 @@ function execute() {
     let to = args.to;
     let text = args.text;
     let isDetailed = args.v;
+    let options = { from, to, text, isDetailed };
 
-    if (command === 'list') {
-        return showMessages(from, to, isDetailed);
-    }
-    if (command === 'send') {
-        return sendMessage(from, to, text, isDetailed);
-    }
-    if (command === 'delete') {
-        return deleteMessage(args.id);
-    }
-    if (command === 'edit') {
-        return editMessage(args.id, text, isDetailed);
-    }
+    return commands[command](options);
 }
 
-function showMessages(from, to, isDetailed) {
+function showMessages(args) {
     return new Promise((resolve, reject) => {
         let req = request
-            .get({ uri: 'http://localhost:8080/messages', qs: createQueryParams(from, to) })
+            .get({ uri: 'http://localhost:8080/messages',
+                qs: createQueryParams(args.from, args.to) })
             .on('response', res => {
                 let body = '';
                 res.on('data', function (chunk) {
@@ -47,7 +45,7 @@ function showMessages(from, to, isDetailed) {
 
                 res.on('end', function () {
                     let messages = JSON.parse(body);
-                    let result = messages.map(message => messageToString(message, isDetailed));
+                    let result = messages.map(message => messageToString(message, args.isDetailed));
                     let m = result.join('\n\n');
                     resolve(m);
                 });
@@ -60,10 +58,11 @@ function showMessages(from, to, isDetailed) {
     });
 }
 
-function sendMessage(from, to, text, isDetailed) {
+function sendMessage(args) {
     return new Promise((resolve, reject) => {
         let req = request
-            .post({ uri: 'http://localhost:8080/messages', qs: createQueryParams(from, to) })
+            .post({ uri: 'http://localhost:8080/messages',
+                qs: createQueryParams(args.from, args.to) })
             .on('response', res => {
                 let body = '';
                 res.on('data', function (chunk) {
@@ -72,23 +71,23 @@ function sendMessage(from, to, text, isDetailed) {
 
                 res.on('end', function () {
                     let message = JSON.parse(body);
-                    resolve(messageToString(message, isDetailed));
+                    resolve(messageToString(message, args.isDetailed));
                 });
             });
         req.on('error', function (err) {
             console.info('вот здесь ошибка');
             reject(err);
         });
-
+        let text = args.text;
         req.write(JSON.stringify({ text }));
         req.end();
     });
 }
 
-function deleteMessage(id) {
+function deleteMessage(args) {
     return new Promise((resolve, reject) => {
         request
-            .delete({ uri: `http://localhost:8080/messages/${id}` })
+            .delete({ uri: `http://localhost:8080/messages/${args.id}` })
             .on('response', res => {
                 res.on('end', function () {
                     resolve('DELETED');
@@ -101,10 +100,10 @@ function deleteMessage(id) {
     });
 }
 
-function editMessage(id, text, isDetailed) {
+function editMessage(args) {
     return new Promise((resolve, reject) => {
         let req = request
-            .patch({ uri: `http://localhost:8080/messages/${id}` })
+            .patch({ uri: `http://localhost:8080/messages/${args.id}` })
             .on('response', res => {
                 let body = '';
                 res.on('data', function (chunk) {
@@ -113,14 +112,14 @@ function editMessage(id, text, isDetailed) {
 
                 res.on('end', function () {
                     let message = JSON.parse(body);
-                    resolve(messageToString(message, isDetailed));
+                    resolve(messageToString(message, args.isDetailed));
                 });
             });
         req.on('error', function (err) {
             console.info('вот здесь ошибка');
             reject(err);
         });
-
+        let text = args.text;
         req.write(JSON.stringify({ text }));
         req.end();
     });
