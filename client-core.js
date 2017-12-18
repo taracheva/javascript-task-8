@@ -79,7 +79,6 @@ function sendMessage(args) {
                 });
             });
         req.on('error', function (err) {
-            console.info('вот здесь ошибка');
             reject(err);
         });
         let text = args.text;
@@ -98,7 +97,6 @@ function deleteMessage(args) {
                 });
             })
             .on('error', function (err) {
-                console.info('вот здесь ошибка');
                 reject(err);
             });
     });
@@ -120,7 +118,6 @@ function editMessage(args) {
                 });
             });
         req.on('error', function (err) {
-            console.info('вот здесь ошибка');
             reject(err);
         });
         let text = args.text;
