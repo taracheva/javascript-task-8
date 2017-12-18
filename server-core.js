@@ -66,13 +66,13 @@ function sendMessages(query, res) {
 }
 
 function getMessages(query) {
-    if (query.from === undefined && query.to === undefined) {
+    if (!query.from && !query.to) {
         return messages;
     }
-    if (query.from === undefined) {
+    if (!query.from) {
         return messages.filter(message => message.to === query.to);
     }
-    if (query.to === undefined) {
+    if (!query.to) {
         return messages.filter(message => message.from === query.from);
     }
 
